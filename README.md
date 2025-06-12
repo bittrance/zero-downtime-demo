@@ -1,5 +1,7 @@
 # Adventures in zero-downtime companion repo
 
+This talk draws from the material in my blog post [Zero downtime shutdown for REST APIs](https://bittrance.github.io/posts/graceful-shutdown-for-rest-apis/).
+
 ## Setup
 
 With these preparations, it should be possible to run offline.
@@ -27,7 +29,7 @@ watch kubectl --namespace hello-rest get pods
 
 ```shell
 set IP (kubectl --namespace hello-rest get services hello-rest -o jsonpath='{@.status.loadBalancer.ingress[0].ip}')
-env HELLO_REST_ENDPOINT=http://$IP:8080 k6 run --no-vu-connection-reuse ./load-rest.js
+env HELLO_REST_ENDPOINT=http://$IP:8080 k6 run --no-connection-reuse ./load-rest.js
 ```
 
 ```shell
@@ -40,7 +42,12 @@ Triggers "connection refused"
 
 ```shell
 kubectl apply --namespace hello-rest -f ./hello-rest-v2.yaml
-env HELLO_REST_ENDPOINT=http://$IP:8080 k6 run --no-vu-connection-reuse ./load-rest.js
+```
+
+Wait for re-deploy.
+
+```shell
+env HELLO_REST_ENDPOINT=http://$IP:8080 k6 run --no-connection-reuse ./load-rest.js
 ```
 
 ```shell
@@ -53,6 +60,11 @@ Error-free.
 
 ```shell
 kubectl apply --namespace hello-rest -f ./hello-rest-v3.yaml
+```
+
+Wait for redeploy.
+
+```shell
 env HELLO_REST_ENDPOINT=http://$IP:8080 k6 run ./load-rest.js
 ```
 
@@ -88,3 +100,7 @@ telnet localhost 8080
 ```
 
 Repeat both tests from v1. Observe that both new and idle connections are terminated immediately.
+
+## Further reading
+
+More hello-world code examples can be found in [bittrance/hello-world](https://github.com/bittrance/hello-world). In-depth discussion on [long-lived connections in Kubernetes](https://learnk8s.io/kubernetes-long-lived-connections).
