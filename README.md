@@ -2,6 +2,8 @@
 
 This talk draws from the material in my blog post [Zero downtime shutdown for REST APIs](https://bittrance.github.io/posts/graceful-shutdown-for-rest-apis/).
 
+Presentation [slides used during meetup](./adventures-in-zero-downtime.pdf).
+
 ## Setup
 
 With these preparations, it should be possible to run offline.
